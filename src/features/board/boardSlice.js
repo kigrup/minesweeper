@@ -75,10 +75,10 @@ export const boardSlice = createSlice({
   name: "board",
   initialState: {
     value: {
-      width: 30,
+      width: 50,
       height: 60,
-      mines: 250,
-      boardArray: newBoard(30, 60, 250),
+      mines: 350,
+      boardArray: newBoard(50, 60, 350),
     },
   },
   reducers: {
