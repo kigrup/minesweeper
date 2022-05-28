@@ -82,12 +82,16 @@ export const boardSlice = createSlice({
     },
   },
   reducers: {
-    generate: (state, width, height, mines) => {
+    generate: (state, action) => {
       state.value = {
-        width: width,
-        height: height,
-        mines: mines,
-        boardArray: newBoard(width, height, mines),
+        width: action.payload.width,
+        height: action.payload.height,
+        mines: action.payloadmines,
+        boardArray: newBoard(
+          action.payload.width,
+          action.payload.height,
+          action.payload.mines
+        ),
       };
     },
     reveal: (state, action) => {
