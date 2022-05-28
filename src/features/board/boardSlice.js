@@ -1,8 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
-const newBoard = (w, h, n) => {
-  n = Math.min(w * h, n);
-  let neighbours = [
+const neighboursLocation = (w) => {
+  return [
     {
       offset: -w - 1,
       rowDifference: -1,
@@ -36,6 +35,11 @@ const newBoard = (w, h, n) => {
       rowDifference: 1,
     },
   ];
+};
+
+const newBoard = (w, h, n) => {
+  n = Math.min(w * h, n);
+  let neighbours = neighboursLocation(w);
   let board = Array(w * h);
   for (let p = 0; p < w * h; p++) {
     board[p] = {
@@ -68,7 +72,7 @@ const newBoard = (w, h, n) => {
 };
 
 export const boardSlice = createSlice({
-  name: 'board',
+  name: "board",
   initialState: {
     value: {
       width: 30,
@@ -87,7 +91,34 @@ export const boardSlice = createSlice({
       };
     },
     reveal: (state, action) => {
-      state.value.boardArray[action.payload].revealed = true;
+      let w = state.value.width;
+      let h = state.value.height;
+      let neighbours = neighboursLocation(w);
+
+      const recursiveReveal = (square) => {
+        state.value.boardArray[square].revealed = true;
+        if (state.value.boardArray[square].value === 0) {
+          for (let n = 0; n < neighbours.length; n++) {
+            let neighbour = neighbours[n];
+            let pos = square + neighbour.offset;
+            if (
+              0 <= pos &&
+              pos < w * h &&
+              neighbour.rowDifference ===
+                Math.floor(pos / w) - Math.floor(square / w) &&
+              state.value.boardArray[pos].revealed === false
+            ) {
+              if (state.value.boardArray[pos].value === 0) {
+                recursiveReveal(pos);
+              } else {
+                state.value.boardArray[pos].revealed = true;
+              }
+            }
+          }
+        }
+      };
+
+      recursiveReveal(action.payload);
     },
     toggleFlagged: (state, action) => {
       state.value.boardArray[action.payload].flagged =
