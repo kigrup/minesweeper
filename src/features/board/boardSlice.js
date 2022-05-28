@@ -75,6 +75,7 @@ export const boardSlice = createSlice({
   name: "board",
   initialState: {
     value: {
+      playing: true,
       width: 50,
       height: 60,
       mines: 350,
@@ -95,6 +96,9 @@ export const boardSlice = createSlice({
       };
     },
     reveal: (state, action) => {
+      if (state.value.playing === false) {
+        return;
+      }
       let w = state.value.width;
       let h = state.value.height;
       let neighbours = neighboursLocation(w);
@@ -123,8 +127,19 @@ export const boardSlice = createSlice({
       };
 
       recursiveReveal(action.payload);
+      if (state.value.boardArray[action.payload].value === -9) {
+        state.value.playing = false;
+        state.value.boardArray.forEach((square) => {
+          if (square.value === -9) {
+            square.revealed = true;
+          }
+        });
+      }
     },
     toggleFlagged: (state, action) => {
+      if (state.value.playing === false) {
+        return;
+      }
       state.value.boardArray[action.payload].flagged =
         !state.value.boardArray[action.payload].flagged;
     },
