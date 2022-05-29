@@ -85,9 +85,10 @@ export const boardSlice = createSlice({
   reducers: {
     generate: (state, action) => {
       state.value = {
+        playing: true,
         width: action.payload.width,
         height: action.payload.height,
-        mines: action.payloadmines,
+        mines: action.payload.mines,
         boardArray: newBoard(
           action.payload.width,
           action.payload.height,
